@@ -5,7 +5,6 @@ import keys from 'lodash/keys'
 import filter from 'lodash/filter'
 import { CATEGORIES } from '@/data'
 import { pickWords } from '@/utils'
-import { SpeakerIcon } from '@/icons'
 import { Lesson } from '@/components/Lesson'
 
 const STATUS = {
@@ -24,7 +23,7 @@ export const Training = ({ data }) => {
 
     const store = data.reduce((acc, { category, title, words }) => {
         if (acc[CATEGORIES.ALL] === undefined) {
-            acc[CATEGORIES.ALL] = { title: 'Все категории', words: [] }
+            acc[CATEGORIES.ALL] = { title: 'Все категории слов', words: [] }
         }
         acc[category] = { title, words }
         acc[CATEGORIES.ALL].words = acc[CATEGORIES.ALL].words.concat(words)
@@ -53,7 +52,7 @@ export const Training = ({ data }) => {
     const categories = useMemo(() => filter(keys(store), (c) => c !== category), [store, category])
     console.log(categories)
     return (
-        <div className="bg-base-200 h-full w-full shadow-2xl rounded-[20px] flex flex-col justify-center">
+        <div className="bg-base-100 h-full w-full shadow-2xl rounded-[20px] flex flex-col justify-center">
             {status === STATUS.NOT_STARTED && (
                 <div className="hero-content p-8 flex-col gap-8 lg:flex-row">
                     <div>
@@ -94,7 +93,7 @@ export const Training = ({ data }) => {
                     <img src="/images/learn-lamp.png" className="hidden lg:block max-w-sm rounded-lg" />
                 </div>
             )}
-            {status === STATUS.IN_PROGRESS && <Lesson words={toLearn} onComplete={onLessonDone} />}
+            {status === STATUS.IN_PROGRESS && <Lesson words={toLearn} onComplete={onLessonDone} title={store[category].title} />}
             {status === STATUS.DONE && (
                 <div className="flex flex-col items-center w-full h-full justify-around">
                     <div className="w-full flex flex-col items-center">
