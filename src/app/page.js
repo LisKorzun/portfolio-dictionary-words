@@ -3,7 +3,7 @@ import DEFAULT_WORDS from '@/data'
 
 export default function Home() {
     return (
-        <main className="h-main-content p-4 md:p-24 flex flex-col items-center justify-center">
+        <main className="h-screen w-screen pb-16 lg:pb-20 flex flex-col items-center justify-center">
             <Training data={DEFAULT_WORDS} />
             {/*<div className="hero-content p-8 flex-col gap-8 lg:flex-row">*/}
             {/*    <div>*/}
