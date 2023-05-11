@@ -16,4 +16,5 @@ body {
     background-color: rgb(var(--background-rgb));
     background-image: radial-gradient(rgba(var(--foreground-rgb), .2) 0.5px, rgb(var(--background-rgb)) 0.5px);
     background-size: 5px 5px;
+    min-height: 100vh;
 }

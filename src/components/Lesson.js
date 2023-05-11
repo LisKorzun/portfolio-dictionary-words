@@ -1,28 +1,16 @@
-'use client'
-import { useState } from 'react'
-import WORDS from '@/data'
 import { SpeakerIcon } from '@/icons'
+import { useCallback, useEffect, useState } from 'react'
 
-const words = WORDS[0].words
-
-const LESSON_STATUS = {
-    NEW: 'new',
-    IN_PROGRESS: 'in-progress',
-    DONE: 'done',
-    CANCELLED: 'cancelled',
-}
-const WORDS_PER_LESSON = 5
-
-export const Lesson = () => {
-    const [status, setStatus] = useState(LESSON_STATUS.NEW)
-    const [wordInd, setWordInd] = useState(0)
+export const Lesson = ({ words, onComplete, onCancel }) => {
     const [showAnswer, setShowAnswer] = useState(false)
+    const [wordInd, setWordInd] = useState(0)
     const [failedAnswers, setFailedAnswers] = useState([])
+    const [learnedAnswers, setLearnedAnswers] = useState([])
 
-    const onLessonStarted = () => {
-        setStatus(LESSON_STATUS.IN_PROGRESS)
+    useEffect(() => {
         speakWord(words[wordInd])
-    }
+    }, [words])
+
     const speakWord = (word) => {
         window.speechSynthesis.cancel()
         window.speechSynthesis.speak(new SpeechSynthesisUtterance(word))
@@ -30,65 +18,70 @@ export const Lesson = () => {
     const showWord = () => {
         setShowAnswer(true)
     }
-    const onCorrect = () => {
+    const proceedNext = () => {
         setShowAnswer(false)
         setWordInd((current) => {
             const next = ++current
-            if (next > WORDS_PER_LESSON - 1) {
-                setStatus(LESSON_STATUS.DONE)
-                return 0
-            }
             speakWord(words[next])
             return next
         })
     }
-    const onFail = () => {
-        setFailedAnswers((current) => current.concat(words[wordInd]))
-        onCorrect()
+    const onCorrect = () => {
+        if (wordInd === words.length - 1) {
+            onComplete(learnedAnswers.concat(words[wordInd]), failedAnswers)
+            return
+        }
+        setLearnedAnswers((current) => current.concat(words[wordInd]))
+        proceedNext()
     }
-    console.log(failedAnswers)
+    const onFail = () => {
+        if (wordInd === words.length - 1) {
+            onComplete(learnedAnswers, failedAnswers.concat(words[wordInd]))
+            return
+        }
+        setFailedAnswers((current) => current.concat(words[wordInd]))
+        proceedNext()
+    }
+
+    const downHandler = ({ key }) => {
+        if (key === ' ') {
+            speakWord(words[wordInd])
+        }
+    }
+    useEffect(() => {
+        window.addEventListener('keyup', downHandler)
+        return () => {
+            window.removeEventListener('keyup', downHandler)
+        }
+    }, [words, wordInd])
+
     return (
         <>
-            {status === LESSON_STATUS.NEW && (
-                <>
-                    <div> Стань гуру словарных слов</div>
-                    <div> Доступно {words.length} слов</div>
-                    <button type="button" onClick={onLessonStarted} className="p-4 border border-slate-200">
-                        Начать раунд
+            <div className="h-2/3 w-full flex flex-col justify-around items-center">
+                <button className="btn btn-lg btn-square text-white btn-primary shadow-inner">
+                    <SpeakerIcon width={48} height={48} onClick={() => speakWord(words[wordInd])} />
+                </button>
+                <div className="h-12 flex items-center font-bold text-white text-4xl">{showAnswer ? words[wordInd] : ''}</div>
+            </div>
+            <div className="h-1/3 flex items-center justify-center w-full">
+                {!showAnswer && (
+                    <button type="button" className="btn btn-primary" onClick={showWord}>
+                        Показать ответ
                     </button>
-                </>
-            )}
-            {status === LESSON_STATUS.IN_PROGRESS && (
-                <>
-                    <SpeakerIcon width={48} height={48} className="text-red-500" onClick={() => speakWord(words[wordInd])} />
-                    {!showAnswer && (
-                        <button type="button" onClick={showWord}>
-                            Показать ответ
-                        </button>
-                    )}
-                    {showAnswer && (
-                        <>
-                            <div>{words[wordInd]}</div>
-                            <div className="flex gap-3">
-                                <button type="button" onClick={onCorrect}>
-                                    Верно
-                                </button>
-                                <button type="button" onClick={onFail}>
-                                    Не верно
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </>
-            )}
-            {status === LESSON_STATUS.DONE && (
-                <>
-                    <div>
-                        Неверных ответов {failedAnswers.length} из {WORDS_PER_LESSON}
-                    </div>
-                    <div>{failedAnswers.join(' | ')}</div>
-                </>
-            )}
+                )}
+                {showAnswer && (
+                    <>
+                        <div className="btn-group btn-group-horizontal">
+                            <button className="btn btn-success w-[120px]" onClick={onCorrect}>
+                                Верно
+                            </button>
+                            <button className="btn btn-error w-[120px]" onClick={onFail}>
+                                Не верно
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
         </>
     )
 }

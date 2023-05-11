@@ -25,7 +25,7 @@ export const CATEGORIES = {
 const DEFAULT_WORDS = [
     {
         category: CATEGORIES.RULES,
-        title: 'Из правил',
+        title: 'Слова из правил',
         words: wordsFromRules.split(SEPARATOR),
     },
     {
@@ -50,7 +50,7 @@ const DEFAULT_WORDS = [
     },
     {
         category: CATEGORIES.PREPOSITIONS,
-        title: 'Предлоги',
+        title: 'Слова с предлогами',
         words: wordsWithPrepositions.split(SEPARATOR),
     },
 ]
