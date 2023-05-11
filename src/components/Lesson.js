@@ -66,14 +66,14 @@ export const Lesson = ({ title, words, onComplete, onCancel }) => {
 
     return (
         <>
-            <div className="stats shadow text-center">
+            <div className="stats shadow text-center rounded-none">
                 <div className="stat">
                     <div className="stat-title">Верных</div>
                     <div className="stat-value text-success countdown mx-auto">
                         <span style={{ '--value': learnedAnswers.length }}></span>
                     </div>
                 </div>
-                <div className="stat">
+                <div className="stat hidden md:block">
                     <div className="stat-title">{title}</div>
                     <div className="stat-desc">
                         {wordInd + 1} из {words.length}

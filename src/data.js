@@ -25,7 +25,7 @@ export const CATEGORIES = {
 const DEFAULT_WORDS = [
     {
         category: CATEGORIES.RULES,
-        title: 'Слова из правил',
+        title: 'Исключения из правил',
         words: wordsFromRules.split(SEPARATOR),
     },
     {
