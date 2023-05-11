@@ -6,23 +6,27 @@ import filter from 'lodash/filter'
 import { motion } from 'framer-motion'
 import { smoothTransition } from '@/animation'
 import { CATEGORIES } from '@/data'
-import { pickWords } from '@/utils'
+import { buildFailedResults, pickWords } from '@/utils'
 import { Lesson } from '@/components/Lesson'
 import { CheckIcon, CrossIcon } from '@/icons'
+import useLocalStorage from '@/hooks/useLocalStorage'
 
 const STATUS = {
-    NOT_STARTED: 'not-started',
+    DEFAULT: 'default',
     IN_PROGRESS: 'in-progress',
     DONE: 'done',
     CANCELLED: 'cancelled',
 }
 
 export const Training = ({ data }) => {
-    const [status, setStatus] = useState(STATUS.NOT_STARTED)
-    const [category, setCategory] = useState(CATEGORIES.ALL)
+    const [status, setStatus] = useState(STATUS.DEFAULT)
+    const [category, setCategory] = useState(CATEGORIES.DOUBLED)
     const [toLearn, setToLearn] = useState([])
     const [learned, setLearned] = useState([])
     const [failed, setFailed] = useState([])
+
+    const [storeFailed, setStoreFailed] = useLocalStorage('DWFailedResults', [])
+    const [storeLearned, setStoreLearned] = useLocalStorage('DWLearnedResults', [])
 
     const store = data.reduce((acc, { category, title, words }) => {
         if (acc[CATEGORIES.ALL] === undefined) {
@@ -46,36 +50,32 @@ export const Training = ({ data }) => {
         const wordsToLearn = pickWords(store[category].words)
         setToLearn(wordsToLearn)
     }
+
     const onLessonDone = (learned, failed) => {
         setLearned(learned)
         setFailed(failed)
         setStatus(STATUS.DONE)
-        console.log(learned, failed)
+        // setStoreFailed(failed)
+        // setStoreLearned(learned)
+        const updatedFailed = buildFailedResults(storeFailed, failed, learned)
+        setStoreFailed(updatedFailed)
+        console.log(learned, failed, updatedFailed)
     }
     const onExit = () => {
-        setStatus(STATUS.NOT_STARTED)
+        setStatus(STATUS.DEFAULT)
     }
-    console.log(status === STATUS.DONE)
+    // console.log(storeLearned, storeFailed)
+
     return (
         <motion.div
-            className="h-full w-full rounded-[20px] flex flex-col justify-center"
+            className="h-full w-full max-w-[1300px] rounded-[20px] flex flex-col justify-center"
             initial={{ backgroundColor: 'rgb(42, 48, 60)' }}
             animate={{ backgroundColor: status === STATUS.DONE ? 'transparent' : 'rgb(42, 48, 60)' }}
             transition={{ ...smoothTransition }}
         >
-            {status === STATUS.NOT_STARTED && (
+            {status === STATUS.DEFAULT && (
                 <div className="hero-content p-8 flex-col gap-8 lg:flex-row">
                     <div>
-                        <h1 className="text-3xl lg:text-4xl xl:text-6xl font-extrabold text-base-900 leading-tight">
-                            Стань гуру
-                            <span className="pl-2 text-transparent bg-clip-text bg-gradient-to-r to-accent from-primary">
-                                словарных слов
-                            </span>
-                        </h1>
-                        <p className="text-sm md:text-base py-6">
-                            Тренировка слов несколько раз в день приведет к поразительным результатам. Выберите категорию слов или
-                            практикуйте все сразу.
-                        </p>
                         <button className="btn btn-primary mr-2" onClick={onLessonStarted}>
                             Тренировать
                         </button>
@@ -100,7 +100,6 @@ export const Training = ({ data }) => {
                             </ul>
                         </div>
                     </div>
-                    <img src="/images/learn-lamp.png" className="hidden lg:block max-w-sm rounded-lg" />
                 </div>
             )}
             {status === STATUS.IN_PROGRESS && <Lesson words={toLearn} onComplete={onLessonDone} title={store[category].title} />}
