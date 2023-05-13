@@ -1,7 +1,7 @@
 import difference from 'lodash/difference'
 import slice from 'lodash/slice'
 import { TIMES_TO_REPEAT, WORDS_PER_LESSON } from '@/constants'
-import { forEach, includes, map, sortBy } from 'lodash'
+import { differenceBy, forEach, includes, map, sortBy } from 'lodash'
 import filter from 'lodash/filter'
 
 const shuffleArray = (array) => {
@@ -18,6 +18,14 @@ export const pickWords = (words, wordsToExclude = [], count = WORDS_PER_LESSON) 
     shuffleArray(uniqueWords)
     return slice(uniqueWords, 0, count)
 }
+export const pickWordsByCategory = (words, categories, count = WORDS_PER_LESSON) => {
+    const pickedWords = categories.reduce((acc, cat) => {
+        return acc.concat(words[cat])
+    }, [])
+    shuffleArray(pickedWords)
+    return slice(pickedWords, 0, count)
+}
+
 export const pickByStatusWords = (words, count = WORDS_PER_LESSON) => {
     const sortedWords = sortBy(words, ['status'])
     console.log(sortedWords)
@@ -49,7 +57,7 @@ export const buildResults = (storeFailed, storeLearned, failed, learned, timesTo
         return notLearned
     })
     forEach(failsToAdd, (word) => {
-        filteredFailed.push({ word, status: 0 })
+        filteredFailed.push({ ...word, status: 0 })
     })
     const filteredLearned = filter(storeLearned, ({ word }) => !includes(failed, word))
     const existingLearned = []
@@ -61,8 +69,8 @@ export const buildResults = (storeFailed, storeLearned, failed, learned, timesTo
             return item
         }
     })
-    forEach(difference(learnsToAdd, existingLearned), (word) => {
-        modifiedLearned.push({ word, status: 0 })
+    forEach(differenceBy(learnsToAdd, existingLearned, 'word'), (word) => {
+        modifiedLearned.push({ ...word, status: 0 })
     })
     return { modifiedLearned, modifiedFailed: filteredFailed }
 }

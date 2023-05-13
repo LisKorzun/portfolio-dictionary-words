@@ -1,6 +1,7 @@
 import { smoothTransition } from '@/animation'
 import { CheckIcon, CrossIcon } from '@/icons'
 import { motion } from 'framer-motion'
+import { map } from 'lodash'
 
 export const TrainingLessonResults = ({ title, learned, failed, total, onExit, onStart }) => {
     return (
@@ -35,7 +36,7 @@ export const TrainingLessonResults = ({ title, learned, failed, total, onExit, o
                 </div>
                 <div className="stat-value text-accent">{learned.length}</div>
                 <div className="stat-title text-primary-content">Верно изучено</div>
-                <div className="stat-desc whitespace-normal">{learned.join(', ')}</div>
+                <div className="stat-desc whitespace-normal">{map(learned, (item) => item.word).join(', ')}</div>
             </div>
             <div className="stat">
                 <div className="stat-figure text-secondary">
@@ -43,7 +44,7 @@ export const TrainingLessonResults = ({ title, learned, failed, total, onExit, o
                 </div>
                 <div className="stat-value text-secondary">{failed.length}</div>
                 <div className="stat-title text-primary-content">Стоит подучить</div>
-                <div className="stat-desc whitespace-normal">{failed.join(', ')}</div>
+                <div className="stat-desc whitespace-normal">{map(failed, (item) => item.word).join(', ')}</div>
             </div>
         </motion.div>
     )

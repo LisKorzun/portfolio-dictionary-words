@@ -23,16 +23,16 @@ export const CATEGORIES = {
     PREPOSITIONS: 'prepositions',
 }
 const DEFAULT_WORDS = [
-    {
-        category: CATEGORIES.RULES,
-        title: 'Исключения из правил',
-        words: wordsFromRules.split(SEPARATOR),
-    },
-    {
-        category: CATEGORIES.EMPHASIS,
-        title: 'Ударения',
-        words: wordsEmphasis.split(SEPARATOR),
-    },
+    // {
+    //     category: CATEGORIES.RULES,
+    //     title: 'Исключения из правил',
+    //     words: wordsFromRules.split(SEPARATOR),
+    // },
+    // {
+    //     category: CATEGORIES.EMPHASIS,
+    //     title: 'Ударения',
+    //     words: wordsEmphasis.split(SEPARATOR),
+    // },
     {
         category: CATEGORIES.DOUBLED,
         title: 'Удвоенные согласные',

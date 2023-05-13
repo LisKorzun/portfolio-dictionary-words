@@ -8,7 +8,7 @@ export const TrainingLesson = ({ title, words, onComplete, onCancel }) => {
     const [learnedAnswers, setLearnedAnswers] = useState([])
 
     useEffect(() => {
-        speakWord(words[wordInd])
+        speakWord(words[wordInd].word)
     }, [words])
 
     const speakWord = (word) => {
@@ -22,7 +22,7 @@ export const TrainingLesson = ({ title, words, onComplete, onCancel }) => {
         setShowAnswer(false)
         setWordInd((current) => {
             const next = ++current
-            speakWord(words[next])
+            speakWord(words[next].word)
             return next
         })
     }
@@ -91,9 +91,11 @@ export const TrainingLesson = ({ title, words, onComplete, onCancel }) => {
                 <progress className="progress progress-primary w-full" value={wordInd} max={words.length}></progress>
                 <div className="h-2/4 w-full flex flex-col justify-around items-center">
                     <button className="btn btn-lg btn-square text-white btn-primary shadow-inner">
-                        <SpeakerIcon width={48} height={48} onClick={() => speakWord(words[wordInd])} />
+                        <SpeakerIcon width={48} height={48} onClick={() => speakWord(words[wordInd].word)} />
                     </button>
-                    <div className="h-12 flex items-center font-bold text-white text-4xl">{showAnswer ? words[wordInd] : ''}</div>
+                    <div className="h-12 flex items-center font-bold text-white text-4xl">
+                        {showAnswer ? words[wordInd].word : ''}
+                    </div>
                 </div>
                 <div className="h-1/4 flex items-center justify-center w-full">
                     {!showAnswer && (
