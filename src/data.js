@@ -43,16 +43,16 @@ const DEFAULT_WORDS = [
         title: '"Н" или "НН"',
         words: wordsWithN.split(SEPARATOR),
     },
-    {
-        category: CATEGORIES.ADVERBS,
-        title: 'Наречия',
-        words: wordsAdverbs.split(SEPARATOR),
-    },
-    {
-        category: CATEGORIES.PREPOSITIONS,
-        title: 'Слова с предлогами',
-        words: wordsWithPrepositions.split(SEPARATOR),
-    },
+    // {
+    //     category: CATEGORIES.ADVERBS,
+    //     title: 'Наречия',
+    //     words: wordsAdverbs.split(SEPARATOR),
+    // },
+    // {
+    //     category: CATEGORIES.PREPOSITIONS,
+    //     title: 'Слова с предлогами',
+    //     words: wordsWithPrepositions.split(SEPARATOR),
+    // },
 ]
 
 export default DEFAULT_WORDS
