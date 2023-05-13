@@ -53,7 +53,7 @@ export const TrainingLesson = ({ title, words, onComplete, onCancel }) => {
         if (key >= '1' && key <= '3' && showAnswer) {
             onFail()
         }
-        if (key >= '4' && key <= '9' && showAnswer) {
+        if (key >= '6' && key <= '9' && showAnswer) {
             onCorrect()
         }
     }
