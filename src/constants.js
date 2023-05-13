@@ -4,6 +4,6 @@ export const ROUTES = {
     PROFILE: '/profile',
 }
 
-export const WORDS_PER_LESSON = 20
+export const WORDS_PER_LESSON = 5
 
 export const TIMES_TO_REPEAT = 2

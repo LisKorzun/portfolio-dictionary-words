@@ -25,14 +25,14 @@ const VARIANTS = {
     REPEAT: 'repeat',
 }
 const variantsButtons = [
-    { id: VARIANTS.NEW, title: 'Изучение новых' },
+    { id: VARIANTS.NEW, title: 'Изучение новых слов' },
     { id: VARIANTS.MISTAKES, title: 'Исправление ошибок' },
     { id: VARIANTS.REPEAT, title: 'Повторение' },
 ]
 
 export const Training = ({ data }) => {
     const [status, setStatus] = useState()
-    const [variant, setVariant] = useState(VARIANTS.NEW)
+    const [variant, setVariant] = useState(VARIANTS.MISTAKES)
     const [category, setCategory] = useState(CATEGORIES.DOUBLED)
     const [toLearn, setToLearn] = useState([])
     const [learned, setLearned] = useState([])
@@ -79,6 +79,7 @@ export const Training = ({ data }) => {
         }
         setToLearn(wordsToLearn)
         setStatus(STATUS.IN_PROGRESS)
+        console.log(wordsToLearn)
     }
 
     const onLessonDone = (learned, failed) => {
@@ -98,59 +99,80 @@ export const Training = ({ data }) => {
             {status === STATUS.DEFAULT && (
                 <div className="p-8 flex flex-col gap-8 items-center">
                     <TrainingStatistics failed={storeFailed} learned={storeLearned} total={total} />
-                    <div className="btn-group btn-group-custom btn-group-vertical md:btn-group-horizontal shadow">
-                        {map(variantsButtons, ({ id, title }) => (
-                            <button
-                                key={id}
-                                className={`btn ${variant === id ? 'btn-active' : ''}`}
-                                style={{ borderRadius: 0 }}
-                                onClick={() => setVariant(id)}
-                            >
-                                {title}
-                            </button>
-                        ))}
+                    <div className="rounded-lg overflow-hidden shadow-2xl min-w-[500px]">
+                        <div
+                            tabIndex="0"
+                            className={`collapse collapse-arrow ${variant === VARIANTS.NEW ? 'collapse-open' : 'collapse-close'}`}
+                            onClick={() => setVariant(VARIANTS.NEW)}
+                        >
+                            <div className="collapse-title font-bold bg-base-100">{variantsButtons[0].title}</div>
+                            <div className="collapse-content bg-base-100">
+                                <button
+                                    className="btn btn-primary btn-sm"
+                                    onClick={onLessonStarted}
+                                    disabled={isEmpty(notStudied)}
+                                >
+                                    Проверить новые слова
+                                </button>
+                            </div>
+                        </div>
+                        <div
+                            tabIndex="0"
+                            className={`collapse collapse-arrow ${
+                                variant === VARIANTS.MISTAKES ? 'collapse-open' : 'collapse-close'
+                            }`}
+                            onClick={() => setVariant(VARIANTS.MISTAKES)}
+                        >
+                            <div className="collapse-title font-bold bg-neutral">{variantsButtons[1].title}</div>
+                            <div className="collapse-content bg-neutral">
+                                <button
+                                    className="btn btn-secondary btn-sm"
+                                    onClick={onLessonStarted}
+                                    disabled={isEmpty(storeFailed)}
+                                >
+                                    Начать работу над ошибками
+                                </button>
+                            </div>
+                        </div>
+                        <div
+                            tabIndex="0"
+                            className={`collapse collapse-arrow ${
+                                variant === VARIANTS.REPEAT ? 'collapse-open' : 'collapse-close'
+                            }`}
+                            onClick={() => setVariant(VARIANTS.REPEAT)}
+                        >
+                            <div className="collapse-title font-bold bg-base-100">{variantsButtons[2].title}</div>
+                            <div className="collapse-content bg-base-100">
+                                <button
+                                    className="btn  btn-accent btn-sm"
+                                    onClick={onLessonStarted}
+                                    disabled={isEmpty(storeLearned)}
+                                >
+                                    Повторить изученное
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    {variant === VARIANTS.MISTAKES && (
-                        <button className="btn btn-accent btn-lg mr-2" onClick={onLessonStarted} disabled={isEmpty(storeFailed)}>
-                            Начать работу над ошибками
-                        </button>
-                    )}
-                    {variant === VARIANTS.NEW && (
-                        <button className="btn btn-accent btn-lg mr-2" onClick={onLessonStarted} disabled={isEmpty(notStudied)}>
-                            Проверить новые слова
-                        </button>
-                    )}
-                    {variant === VARIANTS.REPEAT && (
-                        <>
-                            {/*<div className="dropdown dropdown-right dropdown-end">*/}
-                            {/*    <div className="indicator">*/}
-                            {/*        <span className="indicator-item badge badge-accent">{store[category].words.length}</span>*/}
-                            {/*        <label tabIndex="0" className="btn">*/}
-                            {/*            {store[category].title}*/}
-                            {/*        </label>*/}
-                            {/*    </div>*/}
-                            {/*    <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-72">*/}
-                            {/*        {categories.map((cat, i) => (*/}
-                            {/*            <li key={i} onClick={onCategoryChange(cat)}>*/}
-                            {/*                <a className="flex justify-between">*/}
-                            {/*                    {store[cat].title}*/}
-                            {/*                    <div className="badge badge-accent badge-outline badge-sm">*/}
-                            {/*                        {store[cat].words.length}*/}
-                            {/*                    </div>*/}
-                            {/*                </a>*/}
-                            {/*            </li>*/}
-                            {/*        ))}*/}
-                            {/*    </ul>*/}
-                            {/*</div>*/}
-                            <button
-                                className="btn btn-accent btn-lg mr-2"
-                                onClick={onLessonStarted}
-                                disabled={isEmpty(notStudied)}
-                            >
-                                Повторить изученное
-                            </button>
-                        </>
-                    )}
+                    {/*<div className="dropdown dropdown-right dropdown-end">*/}
+                    {/*    <div className="indicator">*/}
+                    {/*        <span className="indicator-item badge badge-accent">{store[category].words.length}</span>*/}
+                    {/*        <label tabIndex="0" className="btn">*/}
+                    {/*            {store[category].title}*/}
+                    {/*        </label>*/}
+                    {/*    </div>*/}
+                    {/*    <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-72">*/}
+                    {/*        {categories.map((cat, i) => (*/}
+                    {/*            <li key={i} onClick={onCategoryChange(cat)}>*/}
+                    {/*                <a className="flex justify-between">*/}
+                    {/*                    {store[cat].title}*/}
+                    {/*                    <div className="badge badge-accent badge-outline badge-sm">*/}
+                    {/*                        {store[cat].words.length}*/}
+                    {/*                    </div>*/}
+                    {/*                </a>*/}
+                    {/*            </li>*/}
+                    {/*        ))}*/}
+                    {/*    </ul>*/}
+                    {/*</div>*/}
                 </div>
             )}
             {status === STATUS.IN_PROGRESS && (
