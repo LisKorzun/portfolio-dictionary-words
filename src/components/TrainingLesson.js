@@ -44,16 +44,16 @@ export const TrainingLesson = ({ title, words, onComplete, onCancel }) => {
     }
 
     const downHandler = ({ key }) => {
-        if (key === ' ') {
+        if (key >= 'a' && key <= 'z') {
             speakWord(words[wordInd])
         }
-        if (key === 'Enter') {
+        if (key === ' ') {
             showWord()
         }
-        if (key === 'ArrowLeft' && showAnswer) {
+        if (key >= '1' && key <= '3' && showAnswer) {
             onFail()
         }
-        if (key === 'ArrowRight' && showAnswer) {
+        if (key >= '4' && key <= '9' && showAnswer) {
             onCorrect()
         }
     }
